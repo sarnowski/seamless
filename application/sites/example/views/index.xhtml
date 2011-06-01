@@ -1,0 +1,9 @@
+<view template="template.xhtml" restrict="user->hasRole('guest')" action="userManagerMob->checkValidity()">
+    <content name="mainContent">
+        Hello!
+    </content>
+
+    <content name="sidebar">
+        <view file="userBox.xhtml"/>
+    </content>
+</view>

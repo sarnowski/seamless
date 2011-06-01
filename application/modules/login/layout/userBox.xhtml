@@ -1,0 +1,15 @@
+<div id="userbox">
+    <form rendered="!userManagerMob->isLoggedIn()">
+        <decorate file="field.xhtml">
+            <textfield value="userManagerMob->email"/>
+        </decorate>
+        <decorate file="field.xhtml">
+            <textfield value="userManagerMob->password"/>
+        </decorate>
+        <submit action="userManagerMob->login()" onsuccess="home.xhtml" text="Log in!"/>
+    </form>
+
+    <link action="userManagerMob->logout()" rendered="usermanagerMob->isLoggedIn()">
+        logout
+    </link>
+</div>
