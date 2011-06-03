@@ -40,7 +40,13 @@ class UserManagerMob {
      */
     private $password;
 
+    /**
+     * @action
+     * @throws LoginFailedException
+     * @return void
+     */
     public function login() {
+        debug("logging in");
         if ($this->email != $this->password) {
             $this->messagesMob->addMessage("fail");
             throw new LoginFailedException();
