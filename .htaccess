@@ -1,0 +1,7 @@
+RewriteEngine on
+
+RewriteBase /
+
+# use the TypeSafe dispatcher to handle all requests except file requests
+RewriteCond %{REQUEST_FILENAME}       !-f
+RewriteRule ^(.*)$                    index.php  [QSA,L]

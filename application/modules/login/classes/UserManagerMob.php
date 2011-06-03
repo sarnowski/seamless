@@ -87,7 +87,7 @@ class UserManagerMob {
 
     /**
      * @bypassInterceptors
-     * @return void
+     * @return string
      */
     function __toString() {
         return 'UserManagerMob';

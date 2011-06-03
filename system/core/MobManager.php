@@ -30,12 +30,14 @@ class MobManager {
 
     public function start($directory, $site) {
         // folders to watch for php code
+        $systemModuleMobClasses = $this->findMobs("$directory/system/modules");
         $applicationModuleMobClasses = $this->findMobs("$directory/application/modules");
         $applicationMobClasses = $this->findMobs("$directory/application/classes");
         $siteModuleMobClasses = $this->findMobs("$directory/application/sites/$site/modules");
         $siteMobClasses = $this->findMobs("$directory/application/sites/$site/classes");
 
         $this->classes = array_merge(
+            $systemModuleMobClasses,
             $applicationModuleMobClasses,
             $applicationMobClasses,
             $siteModuleMobClasses,
@@ -60,6 +62,9 @@ class MobManager {
     }
 
     private function findMobs($directory) {
+        if (!file_exists($directory)) {
+            return array();
+        }
         $classes = array();
         $dh = dir($directory);
         while (false !== ($entry = $dh->read())) {
@@ -276,6 +281,21 @@ class MobManager {
             $mobs[] = new MobProxy($className);
         }
         return $mobs;
+    }
+
+    public function hasMob($alias) {
+        return isset($this->aliases[$alias]);
+    }
+
+    public function hasSingleMob($alias) {
+        if (!isset($this->aliases[$alias])) {
+            return false;
+        }
+        return count($this->aliases[$alias]) == 1;
+    }
+
+    public function getNames() {
+        return array_keys($this->aliases);
     }
 
     public function callMethod($className, $method, $arguments) {

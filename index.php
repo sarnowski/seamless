@@ -5,18 +5,40 @@
  * @author Tobias Sarnowski
  */
 
-include('system/MobManager.php');
+include('system/core/MobManager.php');
+include('system/core/Dispatcher.php');
 
-$mobManager = new MobManager();
-$mobManager->start(__DIR__, 'example');
+$site = 'example';
+if (file_exists('sites.php')) {
+    include('sites.php');
+    if (!isset($sites)) {
+        throw new Exception('$sites not found after sites.php inclusion');
+    }
+    $found = false;
+    foreach ($sites as $pattern => $name) {
+        if (preg_match("#$pattern#", $_SERVER['HTTP_HOST'])) {
+            $site = $name;
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        throw new Exception('No site found for '.$_SERVER['HTTP_HOST']);
+    }
+    if (!file_exists("application/sites/".$site)) {
+        throw new Exception("Site $site does not exist.");
+    }
+}
 
-$userManagerMob = $mobManager->getMob('UserManagerMob');
-echo "logged in: ".$userManagerMob->isLoggedIn();
+try {
+    $mobManager = new MobManager();
+    $mobManager->start(__DIR__, $site);
 
-$userManagerMob->login();
-echo "logged in: ".$userManagerMob->isLoggedIn();
+    $dispatcher = $mobManager->getMob('dispatcher');
 
-$messagesMob = $mobManager->getMob('MessagesMob');
-debug($messagesMob->getMessages());
+    $dispatcher->dispatch($site);
+} catch (Exception $e) {
+    echo "<pre>$e</pre>";
+}
 
 $mobManager->stop();
